@@ -96,18 +96,7 @@
     },
   ];
 
-  // -------------------------------------------------------
-  // Mock-данные: мои бронирования
-  // -------------------------------------------------------
-
-  // Каждая бронь: { id, classId, className, chef, date, price, rentEquipment,
-  //                 status: 'booked' | 'completed', rating: null|1..5 }
   let bookings = [];
-
-  // -------------------------------------------------------
-  // Состояние модалок
-  // -------------------------------------------------------
-
   let selectedClassId = null;
   let selectedBookingId = null;
 
@@ -141,10 +130,6 @@
 
   const toastEl = document.getElementById('toast');
   let toastTimer = null;
-
-  // -------------------------------------------------------
-  // Тост-уведомление
-  // -------------------------------------------------------
 
   function showToast(message) {
     toastEl.textContent = message;
@@ -214,7 +199,6 @@
       classListEl.appendChild(card);
     });
 
-    // Навешиваем обработчики на кнопки "Записаться"
     classListEl.querySelectorAll('[data-action="book"]').forEach((btn) => {
       btn.addEventListener('click', () => openBookingModal(btn.dataset.id));
     });
@@ -227,13 +211,16 @@
   function renderBookings() {
     bookingListEl.innerHTML = '';
 
-    if (bookings.length === 0) {
+    // Фильтруем только активные или завершенные бронирования (скрываем удаленные/отмененные)
+    const activeBookings = bookings.filter(b => b.status !== 'cancelled');
+
+    if (activeBookings.length === 0) {
       bookingsEmptyState.hidden = false;
       return;
     }
     bookingsEmptyState.hidden = true;
 
-    bookings.forEach((b) => {
+    activeBookings.forEach((b) => {
       const card = document.createElement('article');
       card.className = 'booking-card';
 
@@ -243,11 +230,16 @@
 
       let actionHtml = '';
       if (b.status === 'booked') {
-        actionHtml = `<button class="btn btn-secondary btn-block" data-action="complete" data-id="${b.id}">Завершить класс</button>`;
+        actionHtml = `
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <button class="btn btn-secondary" style="flex: 1;" data-action="complete" data-id="${b.id}">Завершить класс</button>
+            <button class="btn btn-danger" style="background-color: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 8px 12px; border-radius: 8px; cursor: pointer;" data-action="cancel" data-id="${b.id}">Отменить</button>
+          </div>
+        `;
       } else if (b.status === 'completed' && !b.rating) {
-        actionHtml = `<button class="btn btn-secondary btn-block" data-action="rate" data-id="${b.id}">Оценить шефа</button>`;
+        actionHtml = `<button class="btn btn-secondary btn-block" style="margin-top: 12px;" data-action="rate" data-id="${b.id}">Оценить шефа</button>`;
       } else if (b.rating) {
-        actionHtml = `<div class="booking-rating-line">${'★'.repeat(b.rating)}${'☆'.repeat(5 - b.rating)} <span style="color:var(--ink-soft); font-weight:400; margin-left:4px;">ваша оценка</span></div>`;
+        actionHtml = `<div class="booking-rating-line" style="margin-top: 12px;">${'★'.repeat(b.rating)}${'☆'.repeat(5 - b.rating)} <span style="color:var(--ink-soft); font-weight:400; margin-left:4px;">ваша оценка</span></div>`;
       }
 
       card.innerHTML = `
@@ -269,13 +261,41 @@
     bookingListEl.querySelectorAll('[data-action="complete"]').forEach((btn) => {
       btn.addEventListener('click', () => completeClass(btn.dataset.id));
     });
+    bookingListEl.querySelectorAll('[data-action="cancel"]').forEach((btn) => {
+      btn.addEventListener('click', () => cancelBooking(btn.dataset.id));
+    });
     bookingListEl.querySelectorAll('[data-action="rate"]').forEach((btn) => {
       btn.addEventListener('click', () => openRatingModal(btn.dataset.id));
     });
   }
 
   // -------------------------------------------------------
-  // Переключение вкладок
+  // Отмена бронирования (ИСПРАВЛЕННЫЙ БАГ)
+  // -------------------------------------------------------
+  function cancelBooking(bookingId) {
+    const booking = bookings.find((b) => b.id === bookingId);
+    if (!booking) return;
+
+    // Меням статус брони на отмененный
+    booking.status = 'cancelled';
+
+    // Находим исходный кулинарный класс и возвращаем ему место!
+    const cls = classes.find((c) => c.id === booking.classId);
+    if (cls) {
+      cls.availableSeats += 1;
+      // Если класс был заполнен, открываем его для записи снова
+      if (cls.status === 'full') {
+        cls.status = 'available';
+      }
+    }
+
+    renderClasses();
+    renderBookings();
+    showToast('Запись успешно отменена, место возвращено');
+  }
+
+  // -------------------------------------------------------
+  // Другие функции управления
   // -------------------------------------------------------
 
   function switchTab(tabName) {
@@ -299,10 +319,6 @@
   tabButtons.forEach((btn) => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
-
-  // -------------------------------------------------------
-  // Модальное окно бронирования (Фича 2)
-  // -------------------------------------------------------
 
   function computeTotal(cls) {
     let total = cls.price;
@@ -358,13 +374,11 @@
       return;
     }
 
-    // Уменьшаем количество доступных мест
     cls.availableSeats -= 1;
     if (cls.availableSeats <= 0) {
       cls.status = 'full';
     }
 
-    // Сохраняем бронь
     const booking = {
       id: 'bk-' + Date.now(),
       classId: cls.id,
@@ -383,10 +397,6 @@
     showToast('Вы записаны на класс «' + cls.name + '»');
   });
 
-  // -------------------------------------------------------
-  // Завершение класса
-  // -------------------------------------------------------
-
   function completeClass(bookingId) {
     const booking = bookings.find((b) => b.id === bookingId);
     if (!booking) return;
@@ -394,10 +404,6 @@
     renderBookings();
     openRatingModal(bookingId);
   }
-
-  // -------------------------------------------------------
-  // Модальное окно оценки шефа (Фича 3)
-  // -------------------------------------------------------
 
   function openRatingModal(bookingId) {
     const booking = bookings.find((b) => b.id === bookingId);
@@ -457,10 +463,6 @@
   ratingModalOverlay.addEventListener('click', (e) => {
     if (e.target === ratingModalOverlay) closeRatingModal();
   });
-
-  // -------------------------------------------------------
-  // Инициализация
-  // -------------------------------------------------------
 
   renderClasses();
   renderBookings();
