@@ -1,0 +1,786 @@
+/* =========================================================
+   Шеф-стол — стили
+   Тема: «кухонный тикет» — тёплая бумага + грифельно-зелёный
+   ========================================================= */
+
+:root {
+  --paper: #FBF6EE;
+  --paper-alt: #F3ECDD;
+  --ink: #2B2A28;
+  --ink-soft: #6E6A61;
+  --line: #E4DAC6;
+
+  --pine: #385644;
+  --pine-dark: #24392C;
+  --mustard: #E3A427;
+  --mustard-dark: #B9800F;
+  --tomato: #C1502E;
+  --tomato-soft: #F4E1D8;
+
+  --radius-lg: 16px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+
+  --shadow-card: 0 2px 6px rgba(43, 42, 40, 0.06), 0 10px 24px rgba(43, 42, 40, 0.06);
+  --shadow-modal: 0 20px 60px rgba(20, 24, 20, 0.35);
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper-alt);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* =========================================================
+   Контейнер приложения — имитация мобильного экрана
+   ========================================================= */
+
+.app {
+  max-width: 440px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+}
+
+@media (min-width: 480px) {
+  body {
+    padding: 24px 0;
+  }
+  .app {
+    min-height: calc(100vh - 48px);
+    border-radius: 28px;
+    overflow: hidden;
+  }
+}
+
+/* =========================================================
+   Шапка
+   ========================================================= */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--pine-dark);
+  color: var(--paper);
+  padding: 18px 20px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.brand-mark {
+  font-size: 20px;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: rgba(251, 246, 238, 0.62);
+  padding: 12px 8px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  color: rgba(251, 246, 238, 0.85);
+}
+
+.tab-btn.is-active {
+  color: var(--paper);
+  background: var(--paper);
+  color: var(--pine-dark);
+}
+
+/* =========================================================
+   Основной контент
+   ========================================================= */
+
+.app-main {
+  flex: 1;
+  padding: 20px 18px 100px;
+}
+
+.tab-panel {
+  animation: fadeIn 0.25s ease;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-heading {
+  margin-bottom: 18px;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--pine-dark);
+}
+
+.panel-subtitle {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+/* =========================================================
+   Карточки классов
+   ========================================================= */
+
+.class-list,
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.class-card {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 16px 16px 14px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+/* зубчатый край «тикета» сверху карточки */
+.class-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mustard) 0px,
+    var(--mustard) 10px,
+    transparent 10px,
+    transparent 16px
+  );
+  opacity: 0.9;
+}
+
+.class-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.class-name {
+  font-family: var(--font-display);
+  font-size: 17.5px;
+  font-weight: 600;
+  margin: 0 0 3px;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.class-date {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+.status-pill {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 4px 9px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.status-pill--available {
+  background: #E4EEE2;
+  color: var(--pine);
+}
+
+.status-pill--full {
+  background: #ECE7DA;
+  color: var(--ink-soft);
+}
+
+.status-pill--cancelled {
+  background: var(--tomato-soft);
+  color: var(--tomato);
+}
+
+.class-chef {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.class-chef .chef-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--paper-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.class-chef .chef-rating {
+  color: var(--mustard-dark);
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.cancel-reason {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  background: var(--tomato-soft);
+  color: var(--tomato);
+  font-size: 12.5px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.class-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.class-price {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--pine-dark);
+}
+
+.class-seats {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 1px;
+}
+
+/* Приглушённое состояние «мест нет» */
+.class-card--full {
+  background: #FBFAF6;
+}
+
+.class-card--full .class-name,
+.class-card--full .class-price {
+  color: var(--ink-soft);
+}
+
+.class-card--full::before {
+  opacity: 0.35;
+}
+
+/* Отменённая студией карточка */
+.class-card--cancelled {
+  background: #F4F2ED;
+  border-color: #E7DCCE;
+}
+
+.class-card--cancelled::before {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--tomato) 0px,
+    var(--tomato) 10px,
+    transparent 10px,
+    transparent 16px
+  );
+  opacity: 0.5;
+}
+
+.class-card--cancelled .class-name {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+  text-decoration-color: rgba(110, 106, 97, 0.4);
+}
+
+/* =========================================================
+   Кнопки
+   ========================================================= */
+
+.btn {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 16px;
+  transition: transform 0.12s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--pine);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(56, 86, 68, 0.28);
+}
+
+.btn-primary:hover {
+  background: var(--pine-dark);
+}
+
+.btn-disabled,
+.btn:disabled {
+  background: #E4DFD2;
+  color: #A6A08F;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-disabled:active,
+.btn:disabled:active {
+  transform: none;
+}
+
+.btn-block {
+  width: 100%;
+  padding: 13px 16px;
+  font-size: 15px;
+}
+
+.btn-secondary {
+  background: var(--paper-alt);
+  color: var(--pine-dark);
+}
+
+.btn-secondary:hover {
+  background: var(--line);
+}
+
+/* =========================================================
+   Бронирования (вкладка «Мои бронирования»)
+   ========================================================= */
+
+.booking-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.booking-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.booking-status {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 4px 9px;
+  border-radius: 100px;
+  background: #E4EEE2;
+  color: var(--pine);
+  white-space: nowrap;
+}
+
+.booking-status--done {
+  background: var(--paper-alt);
+  color: var(--ink-soft);
+}
+
+.booking-meta {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.booking-meta strong {
+  color: var(--ink);
+}
+
+.booking-rating-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--mustard-dark);
+  margin-top: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-soft);
+}
+
+.empty-state p {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.empty-state span {
+  font-size: 13px;
+}
+
+/* =========================================================
+   Модальные окна
+   ========================================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(36, 42, 33, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  animation: overlayIn 0.22s ease forwards;
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (min-width: 480px) {
+  .modal-overlay {
+    align-items: center;
+  }
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--paper);
+  border-radius: 22px 22px 0 0;
+  padding: 26px 22px 24px;
+  box-shadow: var(--shadow-modal);
+  transform: translateY(24px);
+  opacity: 0;
+  animation: modalIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.05s;
+}
+
+@keyframes modalIn {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (min-width: 480px) {
+  .modal {
+    border-radius: var(--radius-lg);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--paper-alt);
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: var(--line);
+  color: var(--ink);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  margin: 0 0 14px;
+  color: var(--pine-dark);
+  padding-right: 30px;
+}
+
+.modal-class-info {
+  background: var(--paper-alt);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 13.5px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.modal-class-info strong {
+  font-family: var(--font-display);
+  font-size: 16px;
+  display: block;
+  margin-bottom: 2px;
+  color: var(--pine-dark);
+}
+
+/* Форма */
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: #FFFFFF;
+  font-size: 14.5px;
+  color: var(--ink);
+  font-family: inherit;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--pine);
+  box-shadow: 0 0 0 3px rgba(56, 86, 68, 0.14);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 4px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--ink);
+  user-select: none;
+}
+
+.checkbox-row input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--line);
+  background: #FFFFFF;
+  flex-shrink: 0;
+  position: relative;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.checkbox-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M3 8.5l3 3 7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity 0.15s ease;
+}
+
+.checkbox-row input[type="checkbox"]:checked + .checkbox-box {
+  background: var(--pine);
+  border-color: var(--pine);
+}
+
+.checkbox-row input[type="checkbox"]:checked + .checkbox-box::after {
+  opacity: 1;
+}
+
+.checkbox-row input[type="checkbox"]:focus-visible + .checkbox-box {
+  box-shadow: 0 0 0 3px rgba(56, 86, 68, 0.2);
+}
+
+.price-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 4px;
+  border-top: 1px dashed var(--line);
+  margin: 6px 0 18px;
+}
+
+.price-summary-label {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.price-summary-value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--pine-dark);
+}
+
+/* =========================================================
+   Рейтинг шефа — звёзды
+   ========================================================= */
+
+.modal-rating {
+  text-align: center;
+}
+
+.modal-rating-chef {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.star {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-size: 34px;
+  line-height: 1;
+  color: #E1DACB;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.star:hover,
+.star.is-hover {
+  color: var(--mustard);
+  transform: scale(1.12);
+}
+
+.star.is-active {
+  color: var(--mustard-dark);
+}
+
+.rating-thanks {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--pine);
+  margin-top: 12px;
+}
+
+/* =========================================================
+   Тост
+   ========================================================= */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: var(--pine-dark);
+  color: var(--paper);
+  padding: 12px 20px;
+  border-radius: 100px;
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  z-index: 200;
+  animation: toastIn 0.25s ease;
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast[hidden] {
+  display: none;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

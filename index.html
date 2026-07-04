@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Шеф-стол — кулинарная студия</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- Шапка -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark">🔪</span>
+        <span class="brand-name">Шеф-стол</span>
+      </div>
+
+      <nav class="tabs" role="tablist" aria-label="Разделы приложения">
+        <button class="tab-btn is-active" id="tab-schedule" role="tab" aria-selected="true" aria-controls="panel-schedule" data-tab="schedule">
+          Расписание классов
+        </button>
+        <button class="tab-btn" id="tab-bookings" role="tab" aria-selected="false" aria-controls="panel-bookings" data-tab="bookings">
+          Мои бронирования
+        </button>
+      </nav>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="app-main">
+
+      <!-- Вкладка: Расписание классов -->
+      <section class="tab-panel is-active" id="panel-schedule" role="tabpanel" aria-labelledby="tab-schedule">
+        <div class="panel-heading">
+          <h1 class="panel-title">Мастер-классы на неделю</h1>
+          <p class="panel-subtitle">Выберите класс и займите место у плиты</p>
+        </div>
+
+        <div class="class-list" id="classList">
+          <!-- Карточки классов рендерятся через script.js -->
+        </div>
+      </section>
+
+      <!-- Вкладка: Мои бронирования -->
+      <section class="tab-panel" id="panel-bookings" role="tabpanel" aria-labelledby="tab-bookings" hidden>
+        <div class="panel-heading">
+          <h1 class="panel-title">Мои бронирования</h1>
+          <p class="panel-subtitle">Ваши записи и завершённые классы</p>
+        </div>
+
+        <div class="booking-list" id="bookingList">
+          <!-- Карточки бронирований рендерятся через script.js -->
+        </div>
+
+        <div class="empty-state" id="bookingsEmptyState" hidden>
+          <p>Пока нет бронирований</p>
+          <span>Запишитесь на класс во вкладке «Расписание»</span>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Модальное окно бронирования -->
+  <div class="modal-overlay" id="bookingModalOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalCloseBtn" aria-label="Закрыть окно">✕</button>
+
+      <h2 class="modal-title" id="modalTitle">Запись на класс</h2>
+
+      <div class="modal-class-info" id="modalClassInfo">
+        <!-- Название класса, шеф, дата — заполняется через script.js -->
+      </div>
+
+      <form class="booking-form" id="bookingForm">
+        <div class="form-group">
+          <label for="guestName">Имя</label>
+          <input type="text" id="guestName" name="guestName" placeholder="Ваше имя" required>
+        </div>
+
+        <div class="form-group">
+          <label for="guestPhone">Телефон</label>
+          <input type="tel" id="guestPhone" name="guestPhone" placeholder="+7 (___) ___-__-__" required>
+        </div>
+
+        <label class="checkbox-row" for="rentEquipment">
+          <input type="checkbox" id="rentEquipment" name="rentEquipment">
+          <span class="checkbox-box" aria-hidden="true"></span>
+          <span class="checkbox-label">Аренда фартука и ножей (+500 руб)</span>
+        </label>
+
+        <div class="price-summary">
+          <span class="price-summary-label">Итого</span>
+          <span class="price-summary-value" id="totalPrice">0 ₽</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="confirmBookingBtn">
+          Подтвердить
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно оценки шефа -->
+  <div class="modal-overlay" id="ratingModalOverlay" hidden>
+    <div class="modal modal-rating" role="dialog" aria-modal="true" aria-labelledby="ratingModalTitle">
+      <button class="modal-close" id="ratingModalCloseBtn" aria-label="Закрыть окно">✕</button>
+
+      <h2 class="modal-title" id="ratingModalTitle">Оцените шефа</h2>
+      <p class="modal-rating-chef" id="ratingChefName"></p>
+
+      <div class="star-rating" id="starRating" role="radiogroup" aria-label="Оценка от 1 до 5 звёзд">
+        <button type="button" class="star" data-value="1" role="radio" aria-checked="false" aria-label="1 звезда">★</button>
+        <button type="button" class="star" data-value="2" role="radio" aria-checked="false" aria-label="2 звезды">★</button>
+        <button type="button" class="star" data-value="3" role="radio" aria-checked="false" aria-label="3 звезды">★</button>
+        <button type="button" class="star" data-value="4" role="radio" aria-checked="false" aria-label="4 звезды">★</button>
+        <button type="button" class="star" data-value="5" role="radio" aria-checked="false" aria-label="5 звёзд">★</button>
+      </div>
+
+      <p class="rating-thanks" id="ratingThanks" hidden>Спасибо за оценку!</p>
+    </div>
+  </div>
+
+  <!-- Тост-уведомление -->
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
